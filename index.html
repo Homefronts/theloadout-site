@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Loadout · What's new in AI, and whether you should care.</title>
+<meta name="description" content="A daily loadout of AI tools worth trying, and the ones to skip. Honest, no hype, written for everyone.">
+<link rel="canonical" href="https://theloadout.fyi/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Loadout">
+<meta property="og:title" content="The Loadout: What's new in AI, and whether you should care.">
+<meta property="og:description" content="A daily loadout of AI tools worth trying, and the ones to skip. Honest, no hype, written for everyone.">
+<meta property="og:url" content="https://theloadout.fyi/">
+<meta property="og:image" content="https://theloadout.fyi/assets/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@theloadoutai">
+<meta name="twitter:title" content="The Loadout: What's new in AI, and whether you should care.">
+<meta name="twitter:description" content="A daily loadout of AI tools worth trying, and the ones to skip. Honest, no hype, written for everyone.">
+<meta name="twitter:image" content="https://theloadout.fyi/assets/og-image.png">
+<meta name="theme-color" content="#F6F3EC">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F6F3EC;--ink:#2E2E2E;--soft:#66625a;--line:#e4dfd3;--m:#E8A800}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.1rem/1.65 Nunito,system-ui,sans-serif}
+a{color:inherit;text-decoration-color:var(--m);text-decoration-thickness:2px;text-underline-offset:4px}
+a:hover{color:#000;text-decoration-thickness:3px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:-999px}.skip:focus{left:10px;top:10px;background:#fff;padding:6px 10px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+mark{background:linear-gradient(transparent 60%,rgba(232,168,0,.55) 60%);color:inherit}
+/* nav */
+.top{display:flex;justify-content:space-between;align-items:center;padding:24px 0}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;font-weight:900;font-size:1.45rem;letter-spacing:-.02em}
+.logo img{width:38px;height:38px;border-radius:9px}
+.top nav{display:flex;gap:26px;font-weight:700;font-size:.98rem}
+.top nav a{text-decoration:none}
+.top nav a:hover{text-decoration:underline;text-decoration-color:var(--m)}
+.btn{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;font-weight:800;padding:12px 22px;border-radius:12px;transition:background .15s}
+.btn:hover{background:#000;color:#fff}
+.top nav .btn{padding:8px 16px;color:#fff}
+/* hero */
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:72px;align-items:center;padding:72px 0 110px}
+h1{font-weight:900;font-size:clamp(2.5rem,5.6vw,4.4rem);line-height:1.02;letter-spacing:-.035em;margin:0 0 26px}
+.intro p{margin:0 0 1em;max-width:31em;color:#3d3a35}
+.intro .sig{font-weight:700;color:var(--soft)}
+.slot{position:relative;padding:3px;background:var(--ink);clip-path:polygon(18px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px),0 18px)}
+.slot-in{background:#fff;padding:30px 28px 26px;clip-path:inherit}
+.slot h2{font-weight:900;font-size:1.5rem;letter-spacing:-.02em;margin:0 0 4px}
+.slot p{margin:0 0 18px;color:var(--soft);font-size:1rem}
+.slot iframe{display:block;width:100%;height:150px;border:0;background:#fff}
+.slot .alt{margin:14px 0 0;font-size:.95rem}
+.slot{background:linear-gradient(135deg,var(--m) 0 26px,var(--ink) 26px)}
+/* issue */
+.issue{padding:20px 0 100px}
+.issue-head{max-width:40em;margin-bottom:34px}
+h2.big{font-weight:900;font-size:clamp(1.8rem,3.4vw,2.6rem);letter-spacing:-.03em;line-height:1.1;margin:0 0 12px}
+.issue-head p{margin:0;color:var(--soft)}
+.card{background:#fff;border-radius:22px;padding:14px 36px;box-shadow:0 1px 0 var(--line),0 18px 40px -24px rgba(46,46,46,.25);max-width:820px}
+.row{display:grid;grid-template-columns:150px 1fr;gap:28px;padding:24px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.sec{font-weight:800;font-size:.95rem;color:var(--soft);padding-top:3px}
+.row h3{font-weight:800;font-size:1.25rem;line-height:1.3;letter-spacing:-.01em;margin:0 0 6px}
+.row p{margin:0;color:#46423b;font-size:1.02rem}
+.verdict{display:inline-block;font-weight:800;font-size:.85rem;background:#fdf1cf;color:#6b4e00;border-radius:6px;padding:1px 8px;margin-top:10px}
+.cardfoot{border-top:1px solid var(--line);padding:18px 0 14px;font-size:.95rem;color:var(--soft)}
+/* about */
+.about{display:grid;grid-template-columns:1fr 1.3fr;gap:72px;padding:20px 0 100px;align-items:start}
+.about p{margin:0 0 1em;color:#3d3a35}
+/* nudge */
+.nudge{background:var(--ink);color:#fff;border-radius:26px;padding:52px 56px;display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;margin-bottom:70px}
+.nudge h2{font-weight:900;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.025em;margin:0 0 4px;line-height:1.15}
+.nudge p{margin:0;color:#c9c5bc}
+.nudge .btn{background:var(--m);color:var(--ink)}
+.nudge .btn:hover{background:#ffbf1f;color:var(--ink)}
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:0 0 44px;font-size:.95rem;color:var(--soft)}
+footer nav{display:flex;gap:22px;font-weight:700;color:var(--ink)}
+@media (max-width:860px){
+ .hero,.about{grid-template-columns:1fr;gap:40px}
+ .hero{padding:40px 0 80px}
+ .row{grid-template-columns:1fr;gap:4px}
+ .top nav a:not(.btn){display:none}
+}
+@media (max-width:520px){
+ .wrap{padding:0 18px}
+ body{font-size:1.04rem}
+ .card{padding:8px 20px;border-radius:18px}
+ .slot-in{padding:24px 20px 20px}
+ .nudge{padding:36px 26px;border-radius:20px}
+ .issue,.about{padding-bottom:72px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+<header class="top">
+ <a class="logo" href="/"><img src="assets/icon-512.png" alt="" width="38" height="38">the loadout</a>
+ <nav aria-label="Main"><a href="#issue">What's inside</a><a href="#about">About</a><a href="https://theloadoutai.substack.com/archive">Archive</a><a class="btn" href="https://theloadoutai.substack.com/subscribe">Subscribe</a></nav>
+</header>
+
+<main id="main">
+<section class="hero">
+ <div class="intro">
+  <h1>What's new in AI, and whether you should <mark>care.</mark></h1>
+  <p>Hey! Most AI news reads like an ad. Every launch is "huge," and you're left wondering if any of it's actually for you.</p>
+  <p>We're not doing that. Each weekday we pick the few AI stories that matter, explain them in plain words, and tell you which tools are worth a shot and which ones you can skip.</p>
+  <p>Skeptical about AI, or a bit worried? Totally fair. Same here, some days. You're welcome here.</p>
+  <p class="sig">— The Loadout</p>
+ </div>
+ <div class="slot" id="join"><div class="slot-in">
+  <h2>Grab the free daily issue</h2>
+  <p>About 3 minutes a day. Unsubscribe whenever.</p>
+  <iframe src="https://theloadoutai.substack.com/embed" title="Subscribe to The Loadout by email" width="480" height="150" frameborder="0" scrolling="no"></iframe>
+  <p class="alt">Form not showing up? <a href="https://theloadoutai.substack.com/subscribe">Subscribe on Substack</a>.</p>
+ </div></div>
+</section>
+
+<section class="issue" id="issue" aria-labelledby="issue-h">
+ <div class="issue-head">
+  <h2 class="big" id="issue-h">Here's what a typical issue looks like</h2>
+  <p>This is pulled straight from Thursday's edition (Oct 15). Short, honest and done before your coffee's cold.</p>
+ </div>
+ <div class="card">
+  <div class="row"><div class="sec">The big story</div><div><h3>Your AI wants your credit card. Your bank says not so fast.</h3><p>Shopify and Amex want AI agents doing your shopping. JPMorgan's boss says it's "just too risky." Our take: let the agent fill the cart, but keep your own thumb on "buy."</p></div></div>
+  <div class="row"><div class="sec">Gear check</div><div><h3>Meta's Muse</h3><p>It's pretty good at clearing out your inbox. But it trains on your chats by default, so flip that off first, and keep it away from your bank account.</p><span class="verdict">Verdict: equip with caution</span></div></div>
+  <div class="row"><div class="sec">Worth knowing</div><div><h3>A skip button for AI songs is coming</h3><p>97% of people couldn't tell a fully AI song from a human one. Deezer's new filter lets you decide for yourself.</p></div></div>
+  <div class="row"><div class="sec">Side quest</div><div><h3>Vibe code a tiny speedboat game</h3><p>Epic says it "vibe coded" its new launcher. Build your own little game with a chatbot, then get it to play-test its own bugs.</p></div></div>
+  <div class="cardfoot">Want the whole thing? <a href="https://theloadoutai.substack.com/archive">Read it in the archive</a>.</div>
+ </div>
+</section>
+
+<section class="about" id="about" aria-labelledby="about-h">
+ <h2 class="big" id="about-h">Why we're doing this</h2>
+ <div>
+  <p>AI's showing up everywhere: your phone, your job, your games, your kid's homework. Most of the coverage is either breathless hype or doom. We wanted something in between, written the way you'd explain it to a friend.</p>
+  <p>So that's the deal. No jargon, sources on everything, and an honest verdict on every tool we cover, even when the honest verdict is "skip it."</p>
+ </div>
+</section>
+
+<section class="nudge" aria-labelledby="nudge-h">
+ <div><h2 id="nudge-h">Sounds like your kind of thing?</h2><p>It's free, it's every weekday, and it's short. That's it.</p></div>
+ <a class="btn" href="https://theloadoutai.substack.com/subscribe">Subscribe on Substack</a>
+</section>
+</main>
+
+<footer>
+ <nav aria-label="Elsewhere"><a href="https://theloadoutai.substack.com/archive">Archive</a><a href="https://www.youtube.com/@theloadoutai" rel="me">YouTube</a><a href="https://x.com/theloadoutai" rel="me">X</a><a href="https://www.instagram.com/theloadoutai" rel="me">Instagram</a></nav>
+ <span>© 2026 The Loadout · theloadout.fyi</span>
+</footer>
+</div>
+</body>
+</html>
