@@ -7,11 +7,20 @@ HTML between the AUTO marker comments in:
   features/index.html  <!-- AUTO:features-list:start --> ... :end -->
   archive/index.html   <!-- AUTO:archive-list:start --> ... :end -->
 
+It also rewrites sitemap.xml: the fixed pages plus every features/<slug>/index.html
+it finds (folders starting with "_", like _template, and pages marked noindex are
+skipped). lastmod is the newer of the page's last human commit (bot commits are
+ignored, so the bot's own commits don't bump dates) and the newest post that page
+lists. Feature pages that name a Substack post in
+<meta name="loadout:substack-url" content="..."> get an extra "Quick summary" link
+in the post lists.
+
 Nothing else in those files is touched. If the fetch fails, returns zero posts,
 or a marker is missing, the script exits without writing anything.
 Stdlib only. Run from anywhere: python3 scripts/update_archive.py
+Add --dry-run to see what would change (with a diff) without writing anything.
 """
-import html, json, os, re, sys, time, urllib.request
+import html, json, os, re, subprocess, sys, time, urllib.request
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -23,6 +32,11 @@ TZ = ZoneInfo("America/New_York")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NOTES = os.path.join(ROOT, "data", "feature-notes.json")
 WPM = 230
+SITE = "https://theloadout.fyi"
+SITEMAP = os.path.join(ROOT, "sitemap.xml")
+# Fixed pages for the sitemap: (path on the site, file in the repo).
+STATIC_PAGES = [("/", "index.html"), ("/features/", "features/index.html"),
+                ("/archive/", "archive/index.html"), ("/privacy/", "privacy/index.html")]
 
 # Section/tag slugs that map to each label. Add a "breaking" section or tag on
 # Substack and posts in it show up as Breaking automatically.
@@ -130,7 +144,7 @@ def meta(p):
     return '<div class="sec">%s</div>' % "".join(parts)
 
 
-def row(p, notes=None, link_text="Read it on Substack", ind="  "):
+def row(p, notes=None, link_text="Read it on Substack", ind="  ", local=None):
     out = ['%s<article class="row fi" data-type="%s">' % (ind, p["kind"]),
            "%s %s" % (ind, meta(p)),
            "%s <div>" % ind,
@@ -139,7 +153,10 @@ def row(p, notes=None, link_text="Read it on Substack", ind="  "):
         out.append('%s  <p class="dek">%s</p>' % (ind, t(p["summary"])))
     if notes and notes.get(p["slug"]):
         out.append('%s  <p class="inside">%s</p>' % (ind, t(notes[p["slug"]])))
-    out += ['%s  <p class="go"><a href="%s" rel="noopener">%s</a></p>' % (ind, e(p["url"]), t(link_text)),
+    links = '<a href="%s" rel="noopener">%s</a>' % (e(p["url"]), t(link_text))
+    if local and local.get(p["url"]):
+        links += '<a href="%s">Quick summary</a>' % e(local[p["url"]])
+    out += ['%s  <p class="go">%s</p>' % (ind, links),
             "%s </div>" % ind, "%s</article>" % ind]
     return "\n".join(out)
 
@@ -149,6 +166,53 @@ def splice(text, name, body):
     if len(pat.findall(text)) != 1:
         raise RuntimeError("marker AUTO:%s missing or duplicated" % name)
     return pat.sub(lambda m: m.group(1) + body + "\n" + m.group(3).lstrip("\n"), text)
+
+
+def git_date(rel):
+    """Date of the last non-bot commit touching rel, or None (no git, uncommitted file)."""
+    try:
+        out = subprocess.run(["git", "log", "-1", "--format=%cI", "--invert-grep", "--grep=[bot]",
+                              "--fixed-strings", "--", rel], cwd=ROOT, capture_output=True,
+                             text=True, timeout=20).stdout.strip()
+        return datetime.fromisoformat(out).astimezone(TZ).date() if out else None
+    except Exception:
+        return None
+
+
+def feature_pages():
+    """Local feature pages: [(site path, repo file, substack url or None)], sorted by slug."""
+    found, base = [], os.path.join(ROOT, "features")
+    for slug in sorted(os.listdir(base)):
+        rel = "features/%s/index.html" % slug
+        path = os.path.join(ROOT, rel)
+        if slug.startswith(("_", ".")) or not os.path.isfile(path):
+            continue
+        with open(path, encoding="utf-8") as f:
+            head = f.read().split("</head>", 1)[0]
+        if re.search(r'<meta\s+name="robots"\s+content="[^"]*noindex', head, re.I):
+            continue
+        m = re.search(r'<meta\s+name="loadout:substack-url"\s+content="([^"]+)"', head)
+        found.append(("/features/%s/" % slug, rel, html.unescape(m.group(1)) if m else None))
+    return found
+
+
+def sitemap(posts, longs, features, pages):
+    newest = lambda ps: ps[0]["dt"].date() if ps else None
+    content = {"/": newest(features), "/features/": newest(longs), "/archive/": newest(posts)}
+    old = {}
+    try:  # fallback when git can't date a file: keep what the sitemap already says
+        with open(SITEMAP, encoding="utf-8") as f:
+            old = dict(re.findall(r"<loc>%s([^<]*)</loc>\s*<lastmod>([^<]+)</lastmod>" % re.escape(SITE), f.read()))
+    except OSError:
+        pass
+    urls = []
+    for loc, rel in STATIC_PAGES + [(loc, rel) for loc, rel, _ in pages]:
+        dates = [d for d in (git_date(rel), content.get(loc)) if d]
+        day = max(dates).isoformat() if dates else old.get(loc) or datetime.now(TZ).date().isoformat()
+        urls.append("  <url>\n    <loc>%s%s</loc>\n    <lastmod>%s</lastmod>\n  </url>" % (SITE, e(loc), day))
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            "<!-- Generated by scripts/update_archive.py; edits here get overwritten. -->\n"
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n%s\n</urlset>\n' % "\n".join(urls))
 
 
 def main():
@@ -167,15 +231,22 @@ def main():
     except (OSError, ValueError):
         notes = {}
 
+    try:
+        pages = feature_pages()
+    except Exception as ex:
+        warn("not updating: can't read feature pages (%s)" % ex)
+        return 1
+    local = {url: loc for loc, _, url in pages if url}
+
     longs = [p for p in posts if p["kind"] in ("feature", "breaking")]
     features = [p for p in posts if p["kind"] == "feature"]
     if features:
-        latest = row(features[0], link_text="Read the feature")
+        latest = row(features[0], link_text="Read the feature", local=local)
     else:
         latest = '  <p class="empty">The first feature is on its way.</p>'
     blocks = {
         "index.html": {"latest-feature": latest},
-        "features/index.html": {"features-list": "\n".join(row(p, notes) for p in longs)},
+        "features/index.html": {"features-list": "\n".join(row(p, notes, local=local) for p in longs)},
         "archive/index.html": {"archive-list": "\n".join(row(p) for p in posts)},
     }
 
@@ -190,9 +261,30 @@ def main():
                 text = splice(text, name, body)
             if text != old:
                 new[path] = text
+        text = sitemap(posts, longs, features, pages)
+        try:
+            with open(SITEMAP, encoding="utf-8") as f:
+                old = f.read()
+        except OSError:
+            old = None
+        if text != old:
+            new[SITEMAP] = text
     except Exception as ex:
         warn("not updating: %s" % ex)
         return 1
+    if "--dry-run" in sys.argv[1:]:
+        import difflib
+        for path, text in new.items():
+            rel = os.path.relpath(path, ROOT)
+            try:
+                with open(path, encoding="utf-8") as f:
+                    before = f.read().splitlines(True)
+            except OSError:
+                before = []
+            sys.stdout.writelines(difflib.unified_diff(before, text.splitlines(True), "a/" + rel, "b/" + rel))
+        print("dry run: %d posts (%d features); would update %s" % (
+            len(posts), len(features), ", ".join(os.path.relpath(p, ROOT) for p in new) or "nothing"))
+        return 0
     for path, text in new.items():  # write only after every file rendered cleanly
         tmp = path + ".tmp"
         with open(tmp, "w", encoding="utf-8") as f:

@@ -1,0 +1,5 @@
+# theloadout.fyi: everyone's welcome to read and index this site.
+User-agent: *
+Allow: /
+
+Sitemap: https://theloadout.fyi/sitemap.xml

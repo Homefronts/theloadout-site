@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code for non-programmers: fixing a Minecraft mod and a music app | The Loadout AI</title>
+<meta name="description" content="We're not programmers. On the $20 Claude Pro plan, Claude Code fixed a crashing Minecraft mod in 10 minutes and added offline mode to a music app.">
+<link rel="canonical" href="https://theloadout.fyi/features/claude-code-software-we-didnt-write/">
+<meta name="loadout:substack-url" content="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="The Loadout AI">
+<meta property="og:title" content="Claude Code for non-programmers: fixing a Minecraft mod and a music app">
+<meta property="og:description" content="We're not programmers. On the $20 Claude Pro plan, Claude Code fixed a crashing Minecraft mod in 10 minutes and added offline mode to a music app.">
+<meta property="og:url" content="https://theloadout.fyi/features/claude-code-software-we-didnt-write/">
+<meta property="og:image" content="https://theloadout.fyi/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="article:published_time" content="2026-10-20T08:38:04-04:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@theloadoutdaily">
+<meta name="twitter:title" content="Claude Code for non-programmers: fixing a Minecraft mod and a music app">
+<meta name="twitter:description" content="We're not programmers. On the $20 Claude Pro plan, Claude Code fixed a crashing Minecraft mod in 10 minutes and added offline mode to a music app.">
+<meta name="twitter:image" content="https://theloadout.fyi/og-image.png">
+<meta name="theme-color" content="#F6F3EC">
+<meta name="color-scheme" content="light dark">
+<meta name="referrer" content="strict-origin">
+<script>
+/* Theme: set before first paint to avoid a flash. Pref is auto | light | dark. */
+(function(){var d=document.documentElement,p;try{p=localStorage.getItem('theme')}catch(e){}
+if(p!=='light'&&p!=='dark')p='auto';
+var t=p==='auto'?(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;
+d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
+</script>
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/site.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article",
+ "headline":"Claude Code for non-programmers: fixing a Minecraft mod and a music app",
+ "description":"We're not programmers. On the $20 Claude Pro plan, Claude Code fixed a crashing Minecraft mod in 10 minutes and added offline mode to a music app.",
+ "datePublished":"2026-10-20T08:38:04-04:00","dateModified":"2026-10-20T13:00:00-04:00",
+ "author":{"@type":"Organization","name":"The Loadout AI","url":"https://theloadout.fyi/"},
+ "publisher":{"@type":"Organization","name":"The Loadout AI","url":"https://theloadout.fyi/","logo":{"@type":"ImageObject","url":"https://theloadout.fyi/icon-512.png"}},
+ "mainEntityOfPage":"https://theloadout.fyi/features/claude-code-software-we-didnt-write/",
+ "image":"https://theloadout.fyi/og-image.png",
+ "isBasedOn":"https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software",
+ "inLanguage":"en"}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+<header class="top">
+ <a class="logo" href="/"><img src="/icon-512.png" alt="" width="38" height="38">the loadout</a>
+ <nav aria-label="Main"><a class="keep" href="/features/">Features</a><a href="/#issue">What's inside</a><a href="/#about">About</a><a href="/archive/">Archive</a><button class="theme-btn" type="button" id="theme-toggle" aria-label="Theme: auto" title="Theme: auto">
+  <svg class="i-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.5 8.5 0 0 1 9.4 4a8.5 8.5 0 1 0 10.6 10.6z"/></svg>
+ </button><a class="btn" href="https://theloadoutai.substack.com/subscribe" rel="noopener">Subscribe</a></nav>
+</header>
+
+<main id="main">
+<article>
+<header class="page-head">
+ <p class="kicker"><a href="/">The Loadout</a> / <a href="/features/">Features</a></p>
+ <h1 id="page-h">Claude Code for non-programmers: fixing a Minecraft mod and a music app</h1>
+ <p class="byline"><span>Feature</span><span><time datetime="2026-10-20">Oct 20, 2026</time></span><span>Full read: 8 min on Substack</span></p>
+ <p>A crashing Minecraft mod, a YouTube Music app that needed offline mode, and the plan-first workflow (plus the cautions) that made both work.</p>
+</header>
+
+<div class="full-read">
+ <p><strong>This is the quick summary.</strong> The full feature, with every step, link and caution, lives on Substack.</p>
+ <a class="btn" href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software" rel="noopener">Read the full feature on Substack</a>
+</div>
+
+<section class="prose" aria-labelledby="sum-h">
+ <h2 id="sum-h">The short version</h2>
+ <p>We're not programmers. We wanted to see how far Claude Code, Anthropic's coding agent, could get on two pieces of software we didn't write, all on the $20-a-month Claude Pro plan.</p>
+ <p>First up was The Shooting Star [Demo], a brand-new Minecraft mod by rimuru.dev that we run on Fabric. Using its remote crashed the game every time. The cause was a render pipeline issue, and Claude Code fixed it in about 10 minutes. The mod is All Rights Reserved, so the fix stays on our machine. The right move is telling the author.</p>
+ <p>The bigger job was YTubic, NUber's open-source YouTube Music app. It's GPL-3.0, so we forked it as YTubic Plus and added a radio button, Spotify-style offline downloads and a Downloads page that works with no internet. That took 13 commits in about 68 minutes.</p>
+ <p>The speed wasn't the interesting part. With the Superpowers plugin, Claude asked what we wanted before it wrote anything, and we wrote down what would count as failure. It still got things wrong. The plan told yt-dlp to save files with a .part name, which yt-dlp strips, so every download looked failed. Two review passes caught 13 more problems. And saving audio this way is against YouTube's terms as written, so it's unofficial and your call.</p>
+
+ <h2 id="keys-h">Key takeaways</h2>
+ <ul class="takeaways">
+  <li><strong>Questions first, code second.</strong> Say the goal in plain words, let it question you, and list what would count as failure even if the code works.</li>
+  <li><strong>The plan can be wrong.</strong> Tests written from a wrong assumption still pass. Run the thing for real, on a copy.</li>
+  <li><strong>Review passes earn their keep.</strong> Round one fixed 5 issues and round two fixed 8, including one that slipped past our own one-account rule.</li>
+  <li><strong>The judgment calls are yours.</strong> Claude asked; we decided things like the 30-day offline check-in and one account only.</li>
+  <li><strong>Check the license before you share.</strong> GPL-3.0 lets you fork and share. All Rights Reserved means keep the fix to yourself and tell the author.</li>
+  <li><strong>Back up first.</strong> Saves, mod folders and app data, before you change anything.</li>
+ </ul>
+
+ <div class="full-read end">
+  <p>Want the full walkthrough, with the links and the cautions?</p>
+  <a class="btn" href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software" rel="noopener">Read the full feature on Substack</a>
+ </div>
+</section>
+</article>
+
+<section class="nudge" aria-labelledby="nudge-h">
+ <div><h2 id="nudge-h">Sounds like your kind of thing?</h2><p>It's free, it's every weekday, and it's short. That's it.</p><p class="promise">We never sell or share your email or info with anyone unless you’ve explicitly said it’s okay. <a href="/privacy/">Privacy</a></p></div>
+ <a class="btn" href="https://theloadoutai.substack.com/subscribe" rel="noopener">Subscribe on Substack</a>
+</section>
+</main>
+
+<footer>
+ <nav aria-label="Elsewhere"><a href="/archive/">Archive</a><a href="/features/">Features</a><a href="https://www.youtube.com/@theloadoutai" rel="me noopener">YouTube</a><a href="https://x.com/theloadoutdaily" rel="me noopener">X</a><a href="https://www.instagram.com/theloadoutai" rel="me noopener">Instagram</a><a href="/privacy/">Privacy</a></nav>
+ <span>© 2026 The Loadout · theloadout.fyi</span>
+</footer>
+</div>
+<script src="/theme.js"></script>
+</body>
+</html>

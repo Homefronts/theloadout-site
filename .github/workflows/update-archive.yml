@@ -1,7 +1,7 @@
 name: Update archive from Substack
 
-# Rebuilds /archive/, /features/ and the homepage "The longer reads" block
-# from Substack's public archive. Commits only when something changed.
+# Rebuilds /archive/, /features/, the homepage "The longer reads" block and
+# sitemap.xml from Substack's public archive. Commits only when something changed.
 on:
   schedule:
     # Every 30 minutes, 6 AM to midnight New York time (10:00–04:59 UTC),
@@ -24,6 +24,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history so the sitemap can date each page by its last real (non-bot) commit.
+          fetch-depth: 0
 
       - name: Rebuild post lists
         run: python3 scripts/update_archive.py
@@ -31,14 +34,15 @@ jobs:
       - name: Commit if changed
         id: commit
         run: |
-          if git diff --quiet -- index.html features/index.html archive/index.html; then
+          # status (not diff) so a brand-new, untracked sitemap.xml counts as a change too
+          if [ -z "$(git status --porcelain -- index.html features/index.html archive/index.html sitemap.xml)" ]; then
             echo "No changes."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html features/index.html archive/index.html
+          git add index.html features/index.html archive/index.html sitemap.xml
           git commit -m "chore(archive): sync post lists from Substack [bot]"
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
