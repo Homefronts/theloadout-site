@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Features · The Loadout</title>
+<meta name="description" content="Original deep dives from The Loadout, about one a week: things we actually tried with AI, how it went, and what to watch out for.">
+<link rel="canonical" href="https://theloadout.fyi/features/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Loadout">
+<meta property="og:title" content="Features from The Loadout">
+<meta property="og:description" content="Original deep dives from The Loadout, about one a week: things we actually tried with AI, how it went, and what to watch out for.">
+<meta property="og:url" content="https://theloadout.fyi/features/">
+<meta property="og:image" content="https://theloadout.fyi/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@theloadoutai">
+<meta name="twitter:title" content="Features from The Loadout">
+<meta name="twitter:description" content="Original deep dives from The Loadout, about one a week: things we actually tried with AI, how it went, and what to watch out for.">
+<meta name="twitter:image" content="https://theloadout.fyi/og-image.png">
+<meta name="theme-color" content="#F6F3EC">
+<meta name="color-scheme" content="light dark">
+<script>
+/* Theme: set before first paint to avoid a flash. Pref is auto | light | dark. */
+(function(){var d=document.documentElement,p;try{p=localStorage.getItem('theme')}catch(e){}
+if(p!=='light'&&p!=='dark')p='auto';
+var t=p==='auto'?(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;
+d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
+</script>
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+<header class="top">
+ <a class="logo" href="/"><img src="/icon-512.png" alt="" width="38" height="38">the loadout</a>
+ <nav aria-label="Main"><a class="keep" href="/features/" aria-current="page">Features</a><a href="/#issue">What's inside</a><a href="/#about">About</a><a href="https://theloadoutai.substack.com/archive">Archive</a><button class="theme-btn" type="button" id="theme-toggle" aria-label="Theme: auto" title="Theme: auto">
+  <svg class="i-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg>
+  <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+  <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.5 8.5 0 0 1 9.4 4a8.5 8.5 0 1 0 10.6 10.6z"/></svg>
+ </button><a class="btn" href="https://theloadoutai.substack.com/subscribe">Subscribe</a></nav>
+</header>
+
+<main id="main">
+<section class="page-head" aria-labelledby="page-h">
+ <p class="kicker"><a href="/">The Loadout</a> / Features</p>
+ <h1 id="page-h">Features</h1>
+ <p>The daily issue is the quick version. Features are the long one: about once a week, we pick one thing, actually try it, and write up how it went. What worked, what broke, what it cost, and what we'd tell a friend before they try it.</p>
+ <p>Every so often you'll also see a Breaking special edition. That's for when something big drops in AI or tech and it can't wait for tomorrow's issue. Both live on Substack and land in the same inbox as the daily issue.</p>
+</section>
+
+<section class="feat feat-list" id="list" aria-label="All features and Breaking editions">
+ <div class="filter" role="group" aria-label="Show" hidden>
+  <button type="button" data-f="all" aria-pressed="true">All</button>
+  <button type="button" data-f="feature" aria-pressed="false">Features</button>
+  <button type="button" data-f="breaking" aria-pressed="false">Breaking</button>
+ </div>
+ <div class="card">
+<!--
+  ADDING AN ENTRY: copy the matching block below and paste it at the TOP of this list (newest first).
+  - Feature:  <article class="row fi" data-type="feature">  with  <span class="type">Feature</span>
+  - Breaking: <article class="row fi" data-type="breaking"> with  <span class="type breaking">Breaking</span>
+  Then change the date, read time, title, dek, the one-line "In this one" summary and the links.
+  data-type drives the All / Features / Breaking filter, so keep it matching the label.
+  For a new Feature, also swap the "Latest feature" row on the homepage (/index.html). Breaking editions stay off the homepage.
+-->
+
+
+  <article class="row fi" data-type="feature" id="claude-code-fixes">
+   <div class="sec"><span class="type">Feature</span><span>Oct 20, 2026</span><span>8 min read</span></div>
+   <div>
+    <h3><a href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software">We pointed Claude Code at software we didn't write. Here's what actually happened.</a></h3>
+    <p class="dek">A crashing Minecraft mod, a YouTube Music app that needed offline mode, and the plan-first workflow (plus the cautions) that made both work.</p>
+    <p class="inside">In this one: a 10-minute crash fix for The Shooting Star [Demo], building offline downloads into our YTubic Plus fork, the Superpowers + Ponytail workflow, what Claude got wrong, and the license and Terms of Service stuff to know first.</p>
+    <p class="go"><a href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software">Read it on Substack</a></p>
+   </div>
+  </article>
+ <p class="empty" hidden>No Breaking editions yet. We'll only send one when something big happens.</p>
+ </div>
+ <p class="list-foot">A new Feature lands about once a week, Breaking editions only when something big happens. <a href="https://theloadoutai.substack.com/subscribe">Subscribe</a> and they'll come to you.</p>
+</section>
+
+<section class="nudge" aria-labelledby="nudge-h">
+ <div><h2 id="nudge-h">Sounds like your kind of thing?</h2><p>It's free, it's every weekday, and it's short. That's it.</p></div>
+ <a class="btn" href="https://theloadoutai.substack.com/subscribe">Subscribe on Substack</a>
+</section>
+</main>
+
+<footer>
+ <nav aria-label="Elsewhere"><a href="https://theloadoutai.substack.com/archive">Archive</a><a href="/features/">Features</a><a href="https://www.youtube.com/@theloadoutai" rel="me">YouTube</a><a href="https://x.com/theloadoutdaily" rel="me">X</a><a href="https://www.instagram.com/theloadoutai" rel="me">Instagram</a></nav>
+ <span>© 2026 The Loadout · theloadout.fyi</span>
+</footer>
+</div>
+<script src="/theme.js"></script>
+<script>
+/* All / Features / Breaking filter. Without JS the bar stays hidden and everything shows. */
+(function(){var l=document.getElementById('list'),bar=l.querySelector('.filter'),bs=bar.querySelectorAll('button');
+function set(v){l.dataset.show=v;bs.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.f===v)});
+var first=true,n=0;l.querySelectorAll('.fi').forEach(function(r){r.classList.remove('first-visible');if(first&&getComputedStyle(r).display!=='none'){r.classList.add('first-visible');first=false}if(getComputedStyle(r).display!=='none')n++});l.querySelector('.empty').hidden=n>0}
+bs.forEach(function(b){b.addEventListener('click',function(){set(b.dataset.f)})});bar.hidden=false;set('all');})();
+</script>
+
+</body>
+</html>
