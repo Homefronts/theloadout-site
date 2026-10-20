@@ -1,0 +1,52 @@
+name: Update archive from Substack
+
+# Rebuilds /archive/, /features/ and the homepage "The longer reads" block
+# from Substack's public archive. Commits only when something changed.
+on:
+  schedule:
+    # Every 30 minutes, 6 AM to midnight New York time (10:00–04:59 UTC),
+    # plus once an hour overnight. Times are UTC; :07/:37 avoids the top-of-hour rush.
+    - cron: "7,37 10-23,0-4 * * *"
+    - cron: "7 5-9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: update-archive
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rebuild post lists
+        run: python3 scripts/update_archive.py
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          if git diff --quiet -- index.html features/index.html archive/index.html; then
+            echo "No changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html features/index.html archive/index.html
+          git commit -m "chore(archive): sync post lists from Substack [bot]"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # Pushes made with GITHUB_TOKEN don't start a Pages build on their own,
+      # so ask for one explicitly.
+      - name: Request GitHub Pages build
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds"

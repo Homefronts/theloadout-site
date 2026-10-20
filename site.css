@@ -88,16 +88,16 @@ footer nav{display:flex;gap:22px;font-weight:700;color:var(--ink)}
 /* type label: plain small text, first line of the meta column */
 .fi .sec .type{font-weight:800;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-bottom:4px}
 .fi .sec .type.breaking{color:var(--verdict-fg)}
-/* All / Features / Breaking filter (hidden without JS) */
+/* list filter: All / Issues / Features / Breaking (hidden without JS, see list-filter.js) */
 .filter{display:flex;gap:22px;margin:0 0 18px 4px;font-weight:700;font-size:.95rem;color:var(--soft)}
 .filter[hidden]{display:none}
 .filter button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-underline-offset:4px;text-decoration-thickness:2px}
 .filter button:hover{color:var(--ink);text-decoration:underline;text-decoration-color:var(--m)}
 .filter button[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-decoration-color:var(--m)}
-.feat-list[data-show="feature"] .fi:not([data-type="feature"]),.feat-list[data-show="breaking"] .fi:not([data-type="breaking"]){display:none}
+.feat-list .fi[hidden]{display:none}
 .feat-list .fi.first-visible{border-top:0}
-.feat-list .empty{margin:0;padding:24px 0;color:var(--soft);font-size:1rem}
-.feat-list .empty[hidden]{display:none}
+.feat .empty{margin:0;padding:24px 0;color:var(--soft);font-size:1rem}
+.feat .empty[hidden]{display:none}
 .fi h3{font-weight:900;font-size:clamp(1.35rem,2.4vw,1.7rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 10px}
 .fi h3 a{text-decoration:none}
 .fi h3 a:hover{text-decoration:underline;text-decoration-color:var(--m)}

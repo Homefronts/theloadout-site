@@ -39,7 +39,7 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
 <div class="wrap">
 <header class="top">
  <a class="logo" href="/"><img src="/icon-512.png" alt="" width="38" height="38">the loadout</a>
- <nav aria-label="Main"><a class="keep" href="/features/" aria-current="page">Features</a><a href="/#issue">What's inside</a><a href="/#about">About</a><a href="https://theloadoutai.substack.com/archive">Archive</a><button class="theme-btn" type="button" id="theme-toggle" aria-label="Theme: auto" title="Theme: auto">
+ <nav aria-label="Main"><a class="keep" href="/features/" aria-current="page">Features</a><a href="/#issue">What's inside</a><a href="/#about">About</a><a href="/archive/">Archive</a><button class="theme-btn" type="button" id="theme-toggle" aria-label="Theme: auto" title="Theme: auto">
   <svg class="i-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg>
   <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
   <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.5 8.5 0 0 1 9.4 4a8.5 8.5 0 1 0 10.6 10.6z"/></svg>
@@ -54,24 +54,15 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
  <p>Every so often you'll also see a Breaking special edition. That's for when something big drops in AI or tech and it can't wait for tomorrow's issue. Both live on Substack and land in the same inbox as the daily issue.</p>
 </section>
 
-<section class="feat feat-list" id="list" aria-label="All features and Breaking editions">
+<section class="feat feat-list" data-filter-list aria-label="All features and Breaking editions">
  <div class="filter" role="group" aria-label="Show" hidden>
   <button type="button" data-f="all" aria-pressed="true">All</button>
   <button type="button" data-f="feature" aria-pressed="false">Features</button>
   <button type="button" data-f="breaking" aria-pressed="false">Breaking</button>
  </div>
  <div class="card">
-<!--
-  ADDING AN ENTRY: copy the matching block below and paste it at the TOP of this list (newest first).
-  - Feature:  <article class="row fi" data-type="feature">  with  <span class="type">Feature</span>
-  - Breaking: <article class="row fi" data-type="breaking"> with  <span class="type breaking">Breaking</span>
-  Then change the date, read time, title, dek, the one-line "In this one" summary and the links.
-  data-type drives the All / Features / Breaking filter, so keep it matching the label.
-  For a new Feature, also swap the "Latest feature" row on the homepage (/index.html). Breaking editions stay off the homepage.
--->
-
-
-  <article class="row fi" data-type="feature" id="claude-code-fixes">
+  <!-- AUTO:features-list:start (filled in by scripts/update_archive.py from Substack's "Features" section, plus any "Breaking" section/tag; edits here get overwritten) -->
+  <article class="row fi" data-type="feature">
    <div class="sec"><span class="type">Feature</span><span>Oct 20, 2026</span><span>8 min read</span></div>
    <div>
     <h3><a href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software">We pointed Claude Code at software we didn't write. Here's what actually happened.</a></h3>
@@ -80,7 +71,8 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
     <p class="go"><a href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software">Read it on Substack</a></p>
    </div>
   </article>
- <p class="empty" hidden>No Breaking editions yet. We'll only send one when something big happens.</p>
+  <!-- AUTO:features-list:end -->
+ <p class="empty" hidden data-none="Nothing here yet." data-breaking="No Breaking editions yet. We'll only send one when something big happens." data-feature="No features yet. The first one is on its way.">Nothing here yet.</p>
  </div>
  <p class="list-foot">A new Feature lands about once a week, Breaking editions only when something big happens. <a href="https://theloadoutai.substack.com/subscribe">Subscribe</a> and they'll come to you.</p>
 </section>
@@ -92,18 +84,12 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
 </main>
 
 <footer>
- <nav aria-label="Elsewhere"><a href="https://theloadoutai.substack.com/archive">Archive</a><a href="/features/">Features</a><a href="https://www.youtube.com/@theloadoutai" rel="me">YouTube</a><a href="https://x.com/theloadoutdaily" rel="me">X</a><a href="https://www.instagram.com/theloadoutai" rel="me">Instagram</a></nav>
+ <nav aria-label="Elsewhere"><a href="/archive/">Archive</a><a href="/features/">Features</a><a href="https://www.youtube.com/@theloadoutai" rel="me">YouTube</a><a href="https://x.com/theloadoutdaily" rel="me">X</a><a href="https://www.instagram.com/theloadoutai" rel="me">Instagram</a></nav>
  <span>© 2026 The Loadout · theloadout.fyi</span>
 </footer>
 </div>
 <script src="/theme.js"></script>
-<script>
-/* All / Features / Breaking filter. Without JS the bar stays hidden and everything shows. */
-(function(){var l=document.getElementById('list'),bar=l.querySelector('.filter'),bs=bar.querySelectorAll('button');
-function set(v){l.dataset.show=v;bs.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.f===v)});
-var first=true,n=0;l.querySelectorAll('.fi').forEach(function(r){r.classList.remove('first-visible');if(first&&getComputedStyle(r).display!=='none'){r.classList.add('first-visible');first=false}if(getComputedStyle(r).display!=='none')n++});l.querySelector('.empty').hidden=n>0}
-bs.forEach(function(b){b.addEventListener('click',function(){set(b.dataset.f)})});bar.hidden=false;set('all');})();
-</script>
+<script src="/list-filter.js"></script>
 
 </body>
 </html>
