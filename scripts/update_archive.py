@@ -134,12 +134,12 @@ def row(p, notes=None, link_text="Read it on Substack", ind="  "):
     out = ['%s<article class="row fi" data-type="%s">' % (ind, p["kind"]),
            "%s %s" % (ind, meta(p)),
            "%s <div>" % ind,
-           '%s  <h3><a href="%s">%s</a></h3>' % (ind, e(p["url"]), t(p["title"]))]
+           '%s  <h3><a href="%s" rel="noopener">%s</a></h3>' % (ind, e(p["url"]), t(p["title"]))]
     if p["summary"]:
         out.append('%s  <p class="dek">%s</p>' % (ind, t(p["summary"])))
     if notes and notes.get(p["slug"]):
         out.append('%s  <p class="inside">%s</p>' % (ind, t(notes[p["slug"]])))
-    out += ['%s  <p class="go"><a href="%s">%s</a></p>' % (ind, e(p["url"]), t(link_text)),
+    out += ['%s  <p class="go"><a href="%s" rel="noopener">%s</a></p>' % (ind, e(p["url"]), t(link_text)),
             "%s </div>" % ind, "%s</article>" % ind]
     return "\n".join(out)
 

@@ -20,6 +20,7 @@
 <meta name="twitter:image" content="https://theloadout.fyi/og-image.png">
 <meta name="theme-color" content="#F6F3EC">
 <meta name="color-scheme" content="light dark">
+<meta name="referrer" content="strict-origin">
 <script>
 /* Theme: set before first paint to avoid a flash. Pref is auto | light | dark. */
 (function(){var d=document.documentElement,p;try{p=localStorage.getItem('theme')}catch(e){}
@@ -30,8 +31,7 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/site.css">
 </head>
 <body>
@@ -43,7 +43,7 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
   <svg class="i-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg>
   <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
   <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.5 8.5 0 0 1 9.4 4a8.5 8.5 0 1 0 10.6 10.6z"/></svg>
- </button><a class="btn" href="https://theloadoutai.substack.com/subscribe">Subscribe</a></nav>
+ </button><a class="btn" href="https://theloadoutai.substack.com/subscribe" rel="noopener">Subscribe</a></nav>
 </header>
 
 <main id="main">
@@ -58,8 +58,9 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
  <div class="slot" id="join"><div class="slot-in">
   <h2>Grab the free daily issue</h2>
   <p>About 3 minutes a day. Unsubscribe whenever.</p>
-  <iframe src="https://theloadoutai.substack.com/embed" title="Subscribe to The Loadout by email" width="480" height="150" frameborder="0" scrolling="no"></iframe>
-  <p class="alt">Form not showing up? <a href="https://theloadoutai.substack.com/subscribe">Subscribe on Substack</a>.</p>
+  <a class="btn sub-btn" href="https://theloadoutai.substack.com/subscribe" rel="noopener">Subscribe free on Substack</a>
+  <p class="alt">You’ll type your email on Substack’s page. Nothing from Substack loads here until you click.</p>
+  <p class="promise">We never sell or share your email or info with anyone unless you’ve explicitly said it’s okay. <a href="/privacy/">Privacy</a></p>
  </div></div>
 </section>
 
@@ -73,7 +74,7 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
   <div class="row"><div class="sec">Gear check</div><div><h3>Meta's Muse</h3><p>It's pretty good at clearing out your inbox. But it trains on your chats by default, so flip that off first, and keep it away from your bank account.</p><span class="verdict">Verdict: equip with caution</span></div></div>
   <div class="row"><div class="sec">Worth knowing</div><div><h3>A skip button for AI songs is coming</h3><p>97% of people couldn't tell a fully AI song from a human one. Deezer's new filter lets you decide for yourself.</p></div></div>
   <div class="row"><div class="sec">Side quest</div><div><h3>Vibe code a tiny speedboat game</h3><p>Epic says it "vibe coded" its new launcher. Build your own little game with a chatbot, then get it to play-test its own bugs.</p></div></div>
-  <div class="cardfoot">Want the whole thing? <a href="https://theloadoutai.substack.com/p/your-ai-wants-your-credit-card-your">Read that issue on Substack</a>, or browse <a href="/archive/">the archive</a>.</div>
+  <div class="cardfoot">Want the whole thing? <a href="https://theloadoutai.substack.com/p/your-ai-wants-your-credit-card-your" rel="noopener">Read that issue on Substack</a>, or browse <a href="/archive/">the archive</a>.</div>
  </div>
 </section>
 
@@ -87,9 +88,9 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
   <article class="row fi" data-type="feature">
    <div class="sec"><span class="type">Feature</span><span>Oct 20, 2026</span><span>8 min read</span></div>
    <div>
-    <h3><a href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software">We pointed Claude Code at software we didn't write. Here's what actually happened.</a></h3>
+    <h3><a href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software" rel="noopener">We pointed Claude Code at software we didn't write. Here's what actually happened.</a></h3>
     <p class="dek">A crashing Minecraft mod, a YouTube Music app that needed offline mode, and the plan-first workflow (plus the cautions) that made both work.</p>
-    <p class="go"><a href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software">Read the feature</a></p>
+    <p class="go"><a href="https://theloadoutai.substack.com/p/we-pointed-claude-code-at-software" rel="noopener">Read the feature</a></p>
    </div>
   </article>
   <!-- AUTO:latest-feature:end -->
@@ -106,13 +107,13 @@ d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',t);})();
 </section>
 
 <section class="nudge" aria-labelledby="nudge-h">
- <div><h2 id="nudge-h">Sounds like your kind of thing?</h2><p>It's free, it's every weekday, and it's short. That's it.</p></div>
- <a class="btn" href="https://theloadoutai.substack.com/subscribe">Subscribe on Substack</a>
+ <div><h2 id="nudge-h">Sounds like your kind of thing?</h2><p>It's free, it's every weekday, and it's short. That's it.</p><p class="promise">We never sell or share your email or info with anyone unless you’ve explicitly said it’s okay. <a href="/privacy/">Privacy</a></p></div>
+ <a class="btn" href="https://theloadoutai.substack.com/subscribe" rel="noopener">Subscribe on Substack</a>
 </section>
 </main>
 
 <footer>
- <nav aria-label="Elsewhere"><a href="/archive/">Archive</a><a href="/features/">Features</a><a href="https://www.youtube.com/@theloadoutai" rel="me">YouTube</a><a href="https://x.com/theloadoutdaily" rel="me">X</a><a href="https://www.instagram.com/theloadoutai" rel="me">Instagram</a></nav>
+ <nav aria-label="Elsewhere"><a href="/archive/">Archive</a><a href="/features/">Features</a><a href="https://www.youtube.com/@theloadoutai" rel="me noopener">YouTube</a><a href="https://x.com/theloadoutdaily" rel="me noopener">X</a><a href="https://www.instagram.com/theloadoutai" rel="me noopener">Instagram</a><a href="/privacy/">Privacy</a></nav>
  <span>© 2026 The Loadout · theloadout.fyi</span>
 </footer>
 </div>

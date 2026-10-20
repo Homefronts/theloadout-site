@@ -1,3 +1,6 @@
+/* Nunito, self-hosted (SIL Open Font License 1.1, see /fonts/OFL.txt). One variable file per subset covers every weight we use. */
+@font-face{font-family:'Nunito';font-style:normal;font-weight:200 1000;font-display:swap;src:url(/fonts/nunito-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:200 1000;font-display:swap;src:url(/fonts/nunito-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
 :root{--paper:#F6F3EC;--ink:#2E2E2E;--soft:#66625a;--line:#e4dfd3;--m:#E8A800;--hover:#000;--body:#3d3a35;--body2:#46423b;--surface:#fff;--frame:var(--ink);--btn-bg:var(--ink);--btn-fg:#fff;--btn-hover:#000;--nudge-bg:var(--ink);--nudge-fg:#fff;--nudge-soft:#c9c5bc;--verdict-bg:#fdf1cf;--verdict-fg:#6b4e00;--mark:rgba(232,168,0,.55);--shadow:0 1px 0 var(--line),0 18px 40px -24px rgba(46,46,46,.25);color-scheme:light}
 /* dark theme: warm charcoal, off-white text, mustard accent */
 :root[data-theme="dark"]{--paper:#1C1A17;--ink:#ECE7DC;--soft:#ABA498;--line:#38332C;--m:#E8A800;--hover:#fff;--body:#D4CEC2;--body2:#CBC4B7;--surface:#26231F;--frame:#4A443B;--btn-bg:#E8A800;--btn-fg:#211F1B;--btn-hover:#FFBF1F;--nudge-bg:#2A2622;--nudge-fg:#F3EFE7;--nudge-soft:#B9B2A5;--verdict-bg:rgba(232,168,0,.16);--verdict-fg:#F2C14E;--mark:rgba(232,168,0,.42);--shadow:0 1px 0 var(--line),0 18px 40px -24px rgba(0,0,0,.6);color-scheme:dark}
@@ -36,10 +39,8 @@ h1{font-weight:900;font-size:clamp(2.5rem,5.6vw,4.4rem);line-height:1.02;letter-
 .slot-in{background:var(--surface);padding:30px 28px 26px;clip-path:inherit}
 .slot h2{font-weight:900;font-size:1.5rem;letter-spacing:-.02em;margin:0 0 4px}
 .slot p{margin:0 0 18px;color:var(--soft);font-size:1rem}
-.slot iframe{display:block;width:100%;height:150px;border:0;background:#fff}
 .slot .alt{margin:14px 0 0;font-size:.95rem}
 .slot{background:linear-gradient(135deg,var(--m) 0 26px,var(--frame) 26px)}
-[data-theme="dark"] .slot iframe{border-radius:10px}
 [data-theme="dark"] mark{background:linear-gradient(transparent 76%,var(--m) 76% 88%,transparent 88%)}
 /* issue */
 .issue{padding:20px 0 100px}
@@ -132,3 +133,19 @@ footer nav{display:flex;gap:22px;font-weight:700;color:var(--ink)}
 @media (max-width:374px){
  .top nav a.keep{display:none}
 }
+/* subscribe box: a plain link to Substack, so nothing third-party loads until you click */
+.slot .sub-btn{display:block;text-align:center;padding:15px 22px;font-size:1.05rem}
+.slot .alt{color:var(--soft)}
+.promise{margin:10px 0 0;font-size:.88rem;color:var(--soft)}
+.slot .promise{margin:10px 0 0;font-size:.88rem}
+.nudge .promise{color:var(--nudge-soft);margin-top:10px}
+.nudge .promise a{color:var(--nudge-fg)}
+/* privacy page */
+.prose{max-width:40em;padding:0 0 90px}
+.prose h2{font-weight:900;font-size:1.45rem;letter-spacing:-.02em;margin:40px 0 10px}
+.prose p,.prose li{color:var(--body)}
+.prose p{margin:0 0 1em}
+.prose ul{margin:0 0 1em;padding-left:1.2em}
+.prose li{margin:0 0 .55em}
+.prose .updated{font-size:.95rem;color:var(--soft);margin-top:36px}
+.nudge>div{flex:1 1 380px;max-width:34em}
