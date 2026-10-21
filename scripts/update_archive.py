@@ -15,17 +15,32 @@ lists. Feature pages that name a Substack post in
 <meta name="loadout:substack-url" content="..."> get an extra "Quick summary" link
 in the post lists.
 
-Nothing else in those files is touched. If the fetch fails, returns zero posts,
-or a marker is missing, the script exits without writing anything.
+Posts come from Substack's JSON archive API. If that fails (Substack answers 403 to
+some datacenter IPs, GitHub's runners included), the script falls back to the public
+RSS feed at /feed. RSS has no section info and only the newest ~20 posts, so in that
+mode posts already on the site keep their label and read time, posts missing from
+the feed stay listed (nothing is ever dropped), and only brand-new posts get added
+(labelled Issue, or Breaking if the title starts with "Breaking").
+
+Nothing else in those files is touched. If a marker is missing the script exits
+without writing anything. If both the API and RSS fail or return zero posts, it
+exits with an error (non-zero) so the workflow run shows up red instead of
+silently skipping.
 Stdlib only. Run from anywhere: python3 scripts/update_archive.py
 Add --dry-run to see what would change (with a diff) without writing anything.
 """
 import html, json, os, re, subprocess, sys, time, urllib.request
+import xml.etree.ElementTree as ET
+from email.utils import parsedate_to_datetime
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 PUB = "https://theloadoutai.substack.com"
 API = PUB + "/api/v1/archive?sort=new&limit={limit}&offset={offset}"
+RSS = PUB + "/feed"
+# A normal browser User-Agent; Substack's edge rejects obvious bot UAs more often.
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 PAGE = 50
 MAX_PAGES = 60  # 3,000 posts; a safety stop, not a real limit
 TZ = ZoneInfo("America/New_York")
@@ -50,21 +65,28 @@ def warn(msg):
     print(("::warning::" if os.environ.get("GITHUB_ACTIONS") else "warning: ") + msg)
 
 
-def fetch_json(url, tries=3):
+def error(msg):
+    print(("::error::" if os.environ.get("GITHUB_ACTIONS") else "error: ") + msg)
+
+
+def fetch(url, accept, tries=3):
     last = None
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers={
-                "User-Agent": "theloadout.fyi archive updater (+https://theloadout.fyi)",
-                "Accept": "application/json"})
+                "User-Agent": UA, "Accept": accept, "Accept-Language": "en-US,en;q=0.9"})
             with urllib.request.urlopen(req, timeout=30) as r:
                 if r.status != 200:
                     raise RuntimeError("HTTP %s" % r.status)
-                return json.loads(r.read().decode("utf-8"))
-        except Exception as e:  # network, HTTP, JSON
+                return r.read()
+        except Exception as e:  # network, HTTP
             last = e
             time.sleep(2 * (i + 1))
     raise RuntimeError("fetch failed for %s: %s" % (url, last))
+
+
+def fetch_json(url):
+    return json.loads(fetch(url, "application/json").decode("utf-8"))
 
 
 def fetch_posts():
@@ -80,6 +102,78 @@ def fetch_posts():
         if len(batch) < PAGE:
             break
     return posts
+
+
+def fetch_rss():
+    """Newest posts from the RSS feed, as normalized post dicts minus kind/mins."""
+    root = ET.fromstring(fetch(RSS, "application/rss+xml, application/xml;q=0.9, */*;q=0.8"))
+    content_ns = "{http://purl.org/rss/1.0/modules/content/}encoded"
+    out = []
+    for it in root.iter("item"):
+        title = (it.findtext("title") or "").strip()
+        url = (it.findtext("link") or "").strip()
+        m = re.match(r"https://[^/]+/p/([^/?#]+)", url)
+        try:
+            dt = parsedate_to_datetime(it.findtext("pubDate") or "").astimezone(TZ)
+        except (TypeError, ValueError):
+            continue
+        if not (title and m):
+            continue
+        body = re.sub(r"<[^>]+>", " ", html.unescape(it.findtext(content_ns) or ""))
+        out.append({"title": title, "slug": m.group(1), "url": "%s/p/%s" % (PUB, m.group(1)),
+                    "dt": dt, "summary": short(it.findtext("description")),
+                    "words": len(body.split())})
+    return out
+
+
+ROW_RE = re.compile(
+    r'<article class="row fi" data-type="(\w+)">\s*<div class="sec">(.*?)</div>\s*<div>\s*'
+    r'<h3><a href="([^"]+)"[^>]*>(.*?)</a></h3>(?:\s*<p class="dek">(.*?)</p>)?', re.S)
+
+
+def existing_posts():
+    """Posts already listed on the site, read back from the archive and features pages."""
+    found = {}
+    for rel in ("archive/index.html", "features/index.html"):
+        try:
+            with open(os.path.join(ROOT, rel), encoding="utf-8") as f:
+                text = f.read()
+        except OSError:
+            continue
+        for kind, sec, url, title, dek in ROW_RE.findall(text):
+            url = html.unescape(url)
+            if url in found or kind not in LABELS:
+                continue
+            spans = re.findall(r"<span[^>]*>([^<]*)</span>", sec)
+            try:
+                day = datetime.strptime(spans[1], "%b %d, %Y").replace(hour=12, tzinfo=TZ)
+            except (IndexError, ValueError):
+                continue
+            mins = next((int(x.split()[0]) for x in spans[2:] if x.endswith("min read")), None)
+            m = re.search(r"/p/([^/?#]+)", url)
+            found[url] = {"kind": kind, "title": html.unescape(title).strip(),
+                          "slug": m.group(1) if m else slugify(title), "url": url, "dt": day,
+                          "summary": html.unescape(dek or "").strip(), "mins": mins}
+    return found
+
+
+def posts_from_rss():
+    """RSS fallback: merge feed items into what the site already lists; never drop a post."""
+    old = existing_posts()
+    merged = dict(old)
+    for p in fetch_rss():
+        prev = old.get(p["url"])
+        if prev:
+            kind, mins = prev["kind"], prev["mins"]
+        else:
+            kind = "breaking" if re.match(r"\s*breaking\b", p["title"], re.I) else "issue"
+            mins = max(1, round(p["words"] / WPM)) if kind != "issue" and p["words"] else None
+        merged[p["url"]] = {"kind": kind, "title": p["title"], "slug": p["slug"], "url": p["url"],
+                            "dt": p["dt"], "summary": p["summary"] or (prev or {}).get("summary"),
+                            "mins": mins}
+    added = len(merged) - len(old)
+    print("RSS fallback: %d posts already listed, %d new from the feed" % (len(old), added))
+    return list(merged.values())
 
 
 def slugify(s):
@@ -216,15 +310,23 @@ def sitemap(posts, longs, features, pages):
 
 
 def main():
+    posts, source = [], "API"
     try:
-        raw = fetch_posts()
+        posts = list(filter(None, map(clean, fetch_posts())))
+        if not posts:
+            raise RuntimeError("API returned zero posts")
     except Exception as ex:
-        warn("Substack fetch failed, leaving the site as is (%s)" % ex)
-        return 0
-    posts = sorted(filter(None, map(clean, raw)), key=lambda p: p["dt"], reverse=True)
+        warn("Substack API failed, trying the RSS feed (%s)" % ex)
+        source = "RSS"
+        try:
+            posts = posts_from_rss()
+        except Exception as ex2:
+            error("Substack API and RSS feed both failed, site not updated (%s)" % ex2)
+            return 1
     if not posts:
-        warn("Substack returned zero posts, leaving the site as is")
-        return 0
+        error("Substack API and RSS feed returned zero posts, site not updated")
+        return 1
+    posts.sort(key=lambda p: p["dt"], reverse=True)
     try:
         with open(NOTES, encoding="utf-8") as f:
             notes = json.load(f)
@@ -282,16 +384,16 @@ def main():
             except OSError:
                 before = []
             sys.stdout.writelines(difflib.unified_diff(before, text.splitlines(True), "a/" + rel, "b/" + rel))
-        print("dry run: %d posts (%d features); would update %s" % (
-            len(posts), len(features), ", ".join(os.path.relpath(p, ROOT) for p in new) or "nothing"))
+        print("dry run (%s): %d posts (%d features); would update %s" % (
+            source, len(posts), len(features), ", ".join(os.path.relpath(p, ROOT) for p in new) or "nothing"))
         return 0
     for path, text in new.items():  # write only after every file rendered cleanly
         tmp = path + ".tmp"
         with open(tmp, "w", encoding="utf-8") as f:
             f.write(text)
         os.replace(tmp, path)
-    print("%d posts (%d features, %d breaking); %s" % (
-        len(posts), len(features), len(longs) - len(features),
+    print("%s: %d posts (%d features, %d breaking); %s" % (
+        source, len(posts), len(features), len(longs) - len(features),
         ("updated " + ", ".join(os.path.relpath(p, ROOT) for p in new)) if new else "no changes"))
     return 0
 
