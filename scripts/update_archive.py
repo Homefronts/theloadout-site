@@ -150,10 +150,12 @@ def existing_posts():
             except (IndexError, ValueError):
                 continue
             mins = next((int(x.split()[0]) for x in spans[2:] if x.endswith("min read")), None)
+            n = re.search(r"#(\d+)", spans[0])
             m = re.search(r"/p/([^/?#]+)", url)
             found[url] = {"kind": kind, "title": html.unescape(title).strip(),
                           "slug": m.group(1) if m else slugify(title), "url": url, "dt": day,
-                          "summary": html.unescape(dek or "").strip(), "mins": mins}
+                          "summary": html.unescape(dek or "").strip(), "mins": mins,
+                          "num": int(n.group(1)) if n else None}
     return found
 
 
@@ -170,10 +172,22 @@ def posts_from_rss():
             mins = max(1, round(p["words"] / WPM)) if kind != "issue" and p["words"] else None
         merged[p["url"]] = {"kind": kind, "title": p["title"], "slug": p["slug"], "url": p["url"],
                             "dt": p["dt"], "summary": p["summary"] or (prev or {}).get("summary"),
-                            "mins": mins}
+                            "mins": mins, "num": (prev or {}).get("num")}
     added = len(merged) - len(old)
     print("RSS fallback: %d posts already listed, %d new from the feed" % (len(old), added))
     return list(merged.values())
+
+
+def number_issues(posts):
+    """Number daily Issues 1, 2, 3... by publication order. Features and Breaking posts
+    don't get or use a number. Posts read back from the page (RSS fallback) only know
+    their day, so a number already shown on the page breaks ties within a day."""
+    issues = [p for p in posts if p["kind"] == "issue"]
+    issues.sort(key=lambda p: (p["dt"].date(), p.get("num") or 10**9, p["dt"], p["slug"]))
+    for i, p in enumerate(issues, 1):
+        if p.get("num") and p["num"] != i:
+            warn("issue number changed for %s: #%d -> #%d" % (p["slug"], p["num"], i))
+        p["num"] = i
 
 
 def slugify(s):
@@ -231,7 +245,10 @@ t = lambda s: html.escape(s or "", quote=False)     # text
 
 
 def meta(p):
-    parts = ['<span class="type%s">%s</span>' % (" breaking" if p["kind"] == "breaking" else "", LABELS[p["kind"]]),
+    label = LABELS[p["kind"]]
+    if p["kind"] == "issue" and p.get("num"):
+        label += " #%d" % p["num"]
+    parts = ['<span class="type%s">%s</span>' % (" breaking" if p["kind"] == "breaking" else "", label),
              "<span>%s</span>" % p["dt"].strftime("%b %-d, %Y")]
     if p["mins"]:
         parts.append("<span>%d min read</span>" % p["mins"])
@@ -327,6 +344,7 @@ def main():
         error("Substack API and RSS feed returned zero posts, site not updated")
         return 1
     posts.sort(key=lambda p: p["dt"], reverse=True)
+    number_issues(posts)
     try:
         with open(NOTES, encoding="utf-8") as f:
             notes = json.load(f)
