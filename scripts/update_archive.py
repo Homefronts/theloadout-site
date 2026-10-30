@@ -15,7 +15,9 @@ lists. Feature pages that name a Substack post in
 <meta name="loadout:substack-url" content="..."> get an extra "Quick summary" link
 in the post lists.
 
-Posts come from Substack's JSON archive API. If that fails (Substack answers 403 to
+Posts come from Substack's JSON archive API, plus any post in the RSS feed that the
+API doesn't list yet (the archive API can lag new posts by hours); those are looked up
+at /api/v1/posts/<slug> for their section. If the API fails (Substack answers 403 to
 some datacenter IPs, GitHub's runners included), the script falls back to the public
 RSS feed at /feed. RSS has no section info and only the newest ~20 posts, so in that
 mode posts already on the site keep their label and read time, posts missing from
@@ -38,6 +40,7 @@ from zoneinfo import ZoneInfo
 PUB = "https://theloadoutai.substack.com"
 API = PUB + "/api/v1/archive?sort=new&limit={limit}&offset={offset}"
 RSS = PUB + "/feed"
+POST = PUB + "/api/v1/posts/{slug}"
 # A normal browser User-Agent; Substack's edge rejects obvious bot UAs more often.
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
@@ -176,6 +179,38 @@ def posts_from_rss():
     added = len(merged) - len(old)
     print("RSS fallback: %d posts already listed, %d new from the feed" % (len(old), added))
     return list(merged.values())
+
+
+def rss_extras(posts):
+    """Published posts in the RSS feed but not (yet) in the archive API, which lags
+    behind new posts. Each one is looked up at /api/v1/posts/<slug> for its section and
+    subtitle; if that lookup fails, the RSS fields are used (labelled like the RSS
+    fallback). Never raises: if the feed fails, the API list is used as is."""
+    have = {p["slug"] for p in posts}
+    try:
+        items = fetch_rss()
+    except Exception as ex:
+        warn("RSS feed failed, using the API list only (%s)" % ex)
+        return []
+    extra = []
+    for r in items:
+        if r["slug"] in have:
+            continue
+        have.add(r["slug"])
+        try:
+            p = clean(fetch_json(POST.format(slug=r["slug"])))
+        except Exception as ex:
+            warn("post lookup failed for %s, using RSS fields (%s)" % (r["slug"], ex))
+            kind = "breaking" if re.match(r"\s*breaking\b", r["title"], re.I) else "issue"
+            p = {"kind": kind, "title": r["title"], "slug": r["slug"], "url": r["url"], "dt": r["dt"],
+                 "summary": r["summary"],
+                 "mins": max(1, round(r["words"] / WPM)) if kind != "issue" and r["words"] else None}
+        if p:
+            extra.append(p)
+    if extra:
+        print("RSS: added %d post(s) the archive API doesn't list yet: %s" % (
+            len(extra), ", ".join(p["slug"] for p in extra)))
+    return extra
 
 
 def number_issues(posts):
@@ -332,6 +367,7 @@ def main():
         posts = list(filter(None, map(clean, fetch_posts())))
         if not posts:
             raise RuntimeError("API returned zero posts")
+        posts += rss_extras(posts)
     except Exception as ex:
         warn("Substack API failed, trying the RSS feed (%s)" % ex)
         source = "RSS"
