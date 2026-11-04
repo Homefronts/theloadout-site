@@ -229,8 +229,18 @@ def slugify(s):
     return re.sub(r"[^a-z0-9]+", "-", (s or "").lower()).strip("-")
 
 
+# section_id -> section slug, learned from archive API posts. The single-post
+# endpoint returns section_id but no section_slug, so RSS-only posts need this.
+SECTION_SLUGS = {}
+
+
 def kind_of(p):
-    keys = {slugify(p.get("section_slug")), slugify(p.get("section_name"))}
+    sid, sslug = p.get("section_id"), p.get("section_slug")
+    if sid and sslug:
+        SECTION_SLUGS[sid] = sslug
+    elif sid and not sslug:
+        sslug = SECTION_SLUGS.get(sid)
+    keys = {slugify(sslug), slugify(p.get("section_name"))}
     for t in p.get("postTags") or []:
         if isinstance(t, dict):
             keys |= {slugify(t.get("slug")), slugify(t.get("name"))}
