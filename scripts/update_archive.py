@@ -31,21 +31,21 @@ silently skipping.
 Stdlib only. Run from anywhere: python3 scripts/update_archive.py
 Add --dry-run to see what would change (with a diff) without writing anything.
 """
-import html, json, os, re, subprocess, sys, time, urllib.request
+import html, json, os, re, subprocess, sys, time, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 PUB = "https://theloadoutai.substack.com"
-API = PUB + "/api/v1/archive?sort=new&limit={limit}&offset={offset}"
+API = PUB + "/api/v1/archive?sort=new&limit={limit}"
 RSS = PUB + "/feed"
 POST = PUB + "/api/v1/posts/{slug}"
 # A normal browser User-Agent; Substack's edge rejects obvious bot UAs more often.
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
-PAGE = 50
-MAX_PAGES = 60  # 3,000 posts; a safety stop, not a real limit
+PAGE = 12
+MAX_PAGES = 250  # 3,000 posts; a safety stop, not a real limit
 TZ = ZoneInfo("America/New_York")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NOTES = os.path.join(ROOT, "data", "feature-notes.json")
@@ -93,16 +93,23 @@ def fetch_json(url):
 
 
 def fetch_posts():
-    posts, seen = [], set()
-    for n in range(MAX_PAGES):
-        batch = fetch_json(API.format(limit=PAGE, offset=n * PAGE))
-        if not isinstance(batch, list):
-            raise RuntimeError("unexpected API response (not a list)")
+    posts, seen, cursor = [], set(), None
+    for _ in range(MAX_PAGES):
+        url = API.format(limit=PAGE)
+        if cursor:
+            url += "&cursor=" + urllib.parse.quote(str(cursor))
+        resp = fetch_json(url)
+        if isinstance(resp, dict) and isinstance(resp.get("posts"), list):
+            batch, cursor = resp["posts"], resp.get("nextCursor")
+        elif isinstance(resp, list):
+            batch, cursor = resp, None
+        else:
+            raise RuntimeError("unexpected API response")
         for p in batch:
             if isinstance(p, dict) and p.get("id") not in seen:
                 seen.add(p.get("id"))
                 posts.append(p)
-        if len(batch) < PAGE:
+        if not cursor or not batch:
             break
     return posts
 
@@ -113,7 +120,7 @@ def fetch_rss():
     content_ns = "{http://purl.org/rss/1.0/modules/content/}encoded"
     out = []
     for it in root.iter("item"):
-        title = (it.findtext("title") or "").strip()
+        title = html.unescape(it.findtext("title") or "").strip()
         url = (it.findtext("link") or "").strip()
         m = re.match(r"https://[^/]+/p/([^/?#]+)", url)
         try:
@@ -124,7 +131,7 @@ def fetch_rss():
             continue
         body = re.sub(r"<[^>]+>", " ", html.unescape(it.findtext(content_ns) or ""))
         out.append({"title": title, "slug": m.group(1), "url": "%s/p/%s" % (PUB, m.group(1)),
-                    "dt": dt, "summary": short(it.findtext("description")),
+                    "dt": dt, "summary": short(html.unescape(it.findtext("description") or "")),
                     "words": len(body.split())})
     return out
 
