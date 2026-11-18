@@ -116,7 +116,9 @@ def fetch_posts():
 
 def fetch_rss():
     """Newest posts from the RSS feed, as normalized post dicts minus kind/mins."""
-    root = ET.fromstring(fetch(RSS, "application/rss+xml, application/xml;q=0.9, */*;q=0.8"))
+    # Cloudflare often serves a stale /feed even with Cache-Control: no-cache.
+    # A unique query string forces a miss so a just-published post isn't skipped.
+    root = ET.fromstring(fetch(RSS + "?t=%d" % int(time.time()), "application/rss+xml, application/xml;q=0.9, */*;q=0.8"))
     content_ns = "{http://purl.org/rss/1.0/modules/content/}encoded"
     out = []
     for it in root.iter("item"):
